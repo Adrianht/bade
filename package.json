@@ -1,0 +1,24 @@
+{
+  "name": "vaer-parcel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "utm-latlng": "^1.0.6",
+    "vue": "^2.6.11",
+    "vue-hot-reload-api": "^2.3.4",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "@vue/component-compiler-utils": "^3.2.0",
+    "parcel-bundler": "^1.12.4",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
