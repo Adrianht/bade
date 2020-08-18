@@ -1,29 +1,45 @@
 <template>
-  <div class="container">
+  <div class="main-container">
+    <h1>Weather</h1>
+    <FeaturedCards />
     <AreaSearch />
   </div>
 </template>
 
 <script>
 import AreaSearch from "./components/AreaSearch.vue";
+import FeaturedCards from "./FeaturedCards.vue"
 
 export default {
   name: 'App',
   components: {
-      AreaSearch
-  },
-  data() {
-    return {
-      message: 'Using Parcel In A Vue.js App',
-    };
+      AreaSearch,
+      FeaturedCards
   },
 };
 </script>
 
-<style scoped>
-  .container {
-    width: 600px;
-    margin: 50px auto;
-    text-align: center;
-  }
+<style lang="scss">
+body
+{
+  background-color:#f2f2f2;
+  font-family: 'RobotoDraft', 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+*
+{
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.main-container{
+    margin: auto;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    h1{
+        text-align: center;
+    }
+}
+
 </style>
