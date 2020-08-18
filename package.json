@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "mapbox-gl": "^1.12.0",
     "utm-latlng": "^1.0.6",
     "vue": "^2.6.11",
     "vue-hot-reload-api": "^2.3.4",
@@ -25,6 +27,7 @@
     "@babel/preset-react": "^7.10.4",
     "@babel/runtime-corejs2": "^7.0.0",
     "@vue/component-compiler-utils": "^3.2.0",
+    "babel-preset-env": "^1.7.0",
     "node-sass": "^4.14.1",
     "parcel-bundler": "^1.12.4",
     "sass-loader": "^9.0.3",

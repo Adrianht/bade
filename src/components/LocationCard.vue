@@ -1,23 +1,18 @@
 <template>
   <div class="property-card">
-      <a href="#">
-          <div class="property-image">
-              <div class="propery -image-title">
-
-              </div>
-          </div>
-      </a>
-      <div class="property-description">
-          <h5>
-            {{locationName}}, {{municipality}}
-          </h5>
-          <p>
-            {{this.airTemp}}
-          </p>
-          <p>
-              badeTemp
-          </p>
-      </div>
+    <div class="map" :id="'map' + this.id">
+    </div>
+    <div class="property-description">
+        <h5>
+        {{locationName}}, {{municipality}}
+        </h5>
+        <p>
+        {{this.airTemp}}
+        </p>
+        <p>
+            badeTemp
+        </p>
+    </div>
   </div>
 </template>
 
@@ -33,6 +28,10 @@ export default {
         }
     },
     props: {
+        id: {
+            required: true,
+            type: Number
+        },
         easting: {
             required: true,
             type: Number,
@@ -50,8 +49,24 @@ export default {
             type: String
         }
     },
+    methods:{
+        renderMap(){
+            require('dotenv').config()
+            let mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+     
+            mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
+            let map = new mapboxgl.Map({
+                container: "map" + this.id,
+                style: 'mapbox://styles/mapbox/streets-v11'
+            });
+
+        }
+    },
     async created(){
         this.airTemp = await fetchTemperature(this.easting, this.northing)
+        this.renderMap()
+    },
+    mounted(){
     }
 }
 </script>
@@ -101,24 +116,27 @@ p
   box-shadow:  15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
   margin-bottom: 1rem;
 }
-.property-image
-{
-  height:6em;
+
+.map{
+  height:10em;
   width:14em;
   padding:1em 2em;
-  position:Absolute;
   top:0px;
-  -webkit-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  -o-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
-  background-image:url('https://cdn.photographylife.com/wp-content/uploads/2017/01/What-is-landscape-photography.jpg');
-  background-size:cover;
-  background-repeat:no-repeat;
+  position: absolute;
 }
+// .property-image
+// {
+//   -webkit-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+//   -o-transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+//   transition:all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+//   background-image:url('https://cdn.photographylife.com/wp-content/uploads/2017/01/What-is-landscape-photography.jpg');
+//   background-size:cover;
+//   background-repeat:no-repeat;
+// }
 .property-description
 {
   background-color: #FAFAFC;
-  height:12em;
+  height:8em;
   width:14em;
   position:absolute;
   bottom:0em;
@@ -128,26 +146,26 @@ p
   padding: 0.5em 1em;
   text-align:center;
 }
-.property-card:hover .property-description
-{
-  height:0em;
-  padding:0px 1em;
-}
-.property-card:hover .property-image
-{
-  height:18em;
-}
+// .property-card:hover .property-description
+// {
+//   height:0em;
+//   padding:0px 1em;
+// }
+// .property-card:hover .property-image
+// {
+//   height:18em;
+// }
 
-.property-card:hover .property-social-icons
-{
-  background-color:white;
-}
+// .property-card:hover .property-social-icons
+// {
+//   background-color:white;
+// }
 
-.property-card:hover .property-social-icons:hover
-{
-  background-color:blue;
-  cursor:pointer;
-}
+// .property-card:hover .property-social-icons:hover
+// {
+//   background-color:blue;
+//   cursor:pointer;
+// }
 
 
 </style>>
