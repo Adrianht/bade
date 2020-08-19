@@ -1,7 +1,7 @@
 <template>
   <div class="container">
       <div v-for="card in cards" :key="card.id" class="container-div">
-        <LocationCard :id=card.id :easting=card.easting :northing=card.northing :locationName=card.locationName :municipality=card.municipality />  
+        <LocationCard :easting=card.easting :northing=card.northing :locationName=card.locationName :municipality=card.municipality />  
       </div>
   </div>
 </template>
@@ -17,10 +17,10 @@ export default {
             cards: [
                 {   
                     id: 0,
-                    locationName: 'Fredrikstad',
-                    municipality: 'Fredrikstad',
-                    easting: 267729.42,
-                    northing: 6571437.78
+                    locationName: 'Kadetttangen',
+                    municipality: 'Bærum',
+                    easting: 250054.31,
+                    northing: 6647323.83
                 },
                 {
                     id: 1,
