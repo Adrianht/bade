@@ -1,8 +1,10 @@
 <template>
   <div class="container">
     <icon name="search" class="custom-icon"></icon>
-    <input placeholder="Skriv inn stedsnavn" ref="searchField" v-model="searchInput">
-    <button v-if="searchInput.length > 0" @click="fetchArea()">Kjør</button>
+    <input placeholder="Skriv inn stedsnavn" ref="searchField" v-model="searchInput" @keyup.enter="fetchArea()">
+    <button @click="fetchArea()">Kjør</button>
+    <p v-if="noResults">Fant ingen steder med det navnet!</p>
+    <p v-if="toggleError"> {{errorMsg}} </p>
     <div v-if="this.results.length != 0">
         {{results.stedsnavn.toString()}}, {{results.kommunenavn.toString()}}
       <div class="temp-div">
@@ -38,18 +40,32 @@ export default {
         searchInput: '',
         results: [],
         airTemp: '',
-        longLatObj: {}
+        longLatObj: {},
+        errorMsg: "Du må skrive inn stedsnavn",
+        toggleError: false,
+        noResults: false
     };
   },
   methods:{
     async fetchArea(){
         // const parseString = require('xml2js').parseString;    
         // let testRes = []
-        let response = await fetch(`https://ws.geonorge.no/SKWS3Index/ssr/sok?navn=${this.searchInput}*`)
-        let responseText = await response.text()
-        let parsedXML = await parseXML(responseText)
-        this.results = parsedXML.sokRes.stedsnavn[0]
-        this.fetchTemp()
+        if(this.searchInput.length < 1){
+          this.toggleError = true
+          this.results = []
+        } else {
+          this.toggleError = false
+          let response = await fetch(`https://ws.geonorge.no/SKWS3Index/ssr/sok?navn=${this.searchInput}*`)
+          let responseText = await response.text()
+          let parsedXML = await parseXML(responseText)
+          if(parsedXML.sokRes.totaltAntallTreff[0] > 0){
+            this.results = parsedXML.sokRes.stedsnavn[0]
+            this.fetchTemp()
+          } else {
+            this.noResults = true;
+            this.results = []
+          }
+        }
     },
     async fetchTemp(){
         const easting = this.results.aust.toString();
