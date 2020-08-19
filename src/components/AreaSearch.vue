@@ -26,7 +26,7 @@
 
 <script>
 
-import { fetchTemperature, transformUTMtoLatLng } from '../services/APIcalls.js';
+import { fetchTemperature, transformUTMtoLatLng, parseXML } from '../services/APIcalls.js';
 import Icon from './Icon.vue';
 export default {
   name: 'AreaSearch',
@@ -42,18 +42,14 @@ export default {
     };
   },
   methods:{
-    fetchArea(){
-        const parseString = require('xml2js').parseString;    
-        let testRes = []
-        fetch(`https://ws.geonorge.no/SKWS3Index/ssr/sok?navn=${this.searchInput}*`)
-            .then(response => response.text())
-            .then((responseText) => {
-                parseString(responseText, function (err, result) {
-                    testRes = result.sokRes.stedsnavn[0]
-                });
-            })
-            .then(() => this.results = testRes)
-            .finally(() => this.fetchTemp())
+    async fetchArea(){
+        // const parseString = require('xml2js').parseString;    
+        // let testRes = []
+        let response = await fetch(`https://ws.geonorge.no/SKWS3Index/ssr/sok?navn=${this.searchInput}*`)
+        let responseText = await response.text()
+        let parsedXML = await parseXML(responseText)
+        this.results = parsedXML.sokRes.stedsnavn[0]
+        this.fetchTemp()
     },
     async fetchTemp(){
         const easting = this.results.aust.toString();
