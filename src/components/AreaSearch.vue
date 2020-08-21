@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <icon name="search" class="custom-icon"></icon>
+    <icon name="search" ></icon>
     <input placeholder="Skriv inn stedsnavn" ref="searchField" v-model="searchInput" @keyup.enter="fetchArea()">
     <button @click="fetchArea()">Kjør</button>
     <p v-if="noResults">Fant ingen steder med det navnet!</p>
@@ -17,7 +17,7 @@
         <div class="temp">
           <icon name="pool" class="custom-icon"></icon>
           <p>
-            13.7
+            {{this.waterTemp}}
           </p>
         </div>
       </div>
@@ -28,7 +28,7 @@
 
 <script>
 
-import { fetchTemperature, transformUTMtoLatLng, parseXML } from '../services/APIcalls.js';
+import { fetchTemperature, transformUTMtoLatLng, parseXML, fetchWaterTemp } from '../services/APIcalls.js';
 import Icon from './Icon.vue';
 export default {
   name: 'AreaSearch',
@@ -43,10 +43,17 @@ export default {
         longLatObj: {},
         errorMsg: "Du må skrive inn stedsnavn",
         toggleError: false,
-        noResults: false
+        noResults: false,
+        waterTemp: null,
+        globalMap: '',
+        globalMarker: null,
+        lngLat: null
     };
   },
   methods:{
+    // async fetchOcean(){
+    //   this.waterTemp = await fetchWaterTemp(60.10, 5)
+    // },
     async fetchArea(){
         // const parseString = require('xml2js').parseString;    
         // let testRes = []
@@ -61,6 +68,7 @@ export default {
           if(parsedXML.sokRes.totaltAntallTreff[0] > 0){
             this.results = parsedXML.sokRes.stedsnavn[0]
             this.fetchTemp()
+            this.noResults = false;
           } else {
             this.noResults = true;
             this.results = []
@@ -72,6 +80,7 @@ export default {
         const northing = this.results.nord.toString();
         this.longLatObj = transformUTMtoLatLng(easting, northing);
         this.airTemp = await fetchTemperature(this.longLatObj.lat, this.longLatObj.lng)
+        // this.fetchOcean()
         this.renderMap()
     },
     renderMap(){
@@ -79,13 +88,29 @@ export default {
         let mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
         mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
-        let map = new mapboxgl.Map({
+        var globalMap = new mapboxgl.Map({
             container: "map",
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [this.longLatObj.lng, this.longLatObj.lat],
             zoom: 11
         });
+
+        globalMap.addControl(new mapboxgl.NavigationControl());
+
+        this.globalMarker = new mapboxgl.Marker({
+          draggable: true
+          })
+          .setLngLat([this.longLatObj.lng, this.longLatObj.lat])
+          .addTo(globalMap);
+        
+        this.globalMarker.on('dragend', this.onDragEnd);
     },
+    onDragEnd() {
+        let lngLat = this.globalMarker.getLngLat();
+        console.log("marker lng lat drop: ", lngLat)
+        fetchWaterTemp(lngLat.lat, lngLat.lng)
+          .then(res => this.waterTemp = res)
+      }
   },
 };
 </script>
@@ -99,6 +124,7 @@ export default {
     margin-bottom: 1em;
   }
 }
+
 .custom-icon{
   font-size: 42px;
 }
