@@ -50,7 +50,6 @@ export default {
         waterTemp: null,
         globalMap: '',
         globalMarker: null,
-        lngLat: null
     };
   },
   methods:{
@@ -100,7 +99,8 @@ export default {
           })
           .setLngLat([this.longLatObj.lng, this.longLatObj.lat])
           .addTo(globalMap);
-        
+        fetchWaterTemp(this.longLatObj.lat, this.longLatObj.lng)
+          .then(res => this.waterTemp = res)
         this.globalMarker.on('dragend', this.onDragEnd);
     },
     onDragEnd() {
@@ -114,6 +114,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 .temp{
   display: flex;
   justify-content: center;
@@ -128,7 +129,7 @@ export default {
 }
 
 .container {
-    margin: 50px auto;
+    margin: 25px auto;
     text-align: center;
   }
 .map{
@@ -136,6 +137,7 @@ export default {
   width:25em;
   padding:1em;
   top:0px;
+  margin: auto;
 
 }
 

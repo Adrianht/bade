@@ -7,15 +7,15 @@
         <div class="temp-div">
         <div class="temp">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-temperature" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 13.5a4 4 0 1 0 4 0v-8.5a2 2 0 0 0 -4 0v8.5" /><line x1="10" y1="9" x2="14" y2="9" /></svg>
-          <p>
+          <h4>
             {{ this.airTemp }}
-          </p>
+          </h4>
         </div>
         <div class="temp">
           <icon name="pool" class="custom-icon"></icon>
-          <p>
-            13.7
-          </p>
+          <h4>
+            {{this.waterTemp}}
+          </h4>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { fetchTemperature, transformUTMtoLatLng } from '../services/APIcalls.js';
+import { fetchTemperature, transformUTMtoLatLng, fetchWaterTemp } from '../services/APIcalls.js';
 import Icon from './Icon.vue';
 
 export default {
@@ -34,26 +34,35 @@ export default {
     data(){
         return {
             airTemp: '',
+            waterTemp: '',
             transformedToLatLng: []
         }
     },
     props: {
-        easting: {
-            required: true,
-            type: Number,
-        },
-        northing: {
-            required: true,
-            type: Number,
-        },
-        locationName: {
-            required: true,
-            type: String
-        },
-        municipality: {
-            required: true,
-            type: String
-        }
+      locationName: {
+          required: true,
+          type: String
+      },
+      municipality: {
+          required: true,
+          type: String
+      },
+      easting: {
+          required: true,
+          type: Number,
+      },
+      northing: {
+          required: true,
+          type: Number,
+      },
+      waterLat: {
+        required: true,
+        type: Number
+      },
+      waterLng: {
+        required: true,
+        type: Number
+      }
     },
     methods:{
         transformUTM(){
@@ -61,7 +70,10 @@ export default {
     },
     async created(){
         this.transformedToLatLng = transformUTMtoLatLng(this.easting, this.northing)
-        this.airTemp = await fetchTemperature(this.transformedToLatLng.lat, this.transformedToLatLng.lng)
+        fetchTemperature(this.transformedToLatLng.lat, this.transformedToLatLng.lng)
+          .then(res => this.airTemp = res)
+        fetchWaterTemp(this.waterLat, this.waterLng)
+          .then(res => this.waterTemp = res)
     },
 }
 </script>
@@ -100,7 +112,7 @@ p
 
 .property-card
 {
-  height:8em;
+  height:10em;
   width:14em;
   display:-webkit-box;
   display:-ms-flexbox;
@@ -117,13 +129,14 @@ p
   overflow:hidden;
   -webkit-box-shadow:  15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
   box-shadow:  15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
-  margin: 1em;
+  margin: auto;
+  margin-bottom: 2em;
 }
 
 .property-description
 {
   background-color: #FAFAFC;
-  height:8em;
+  height:10em;
   width:14em;
   position:absolute;
   bottom:0em;

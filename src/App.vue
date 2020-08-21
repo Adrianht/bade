@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <h1>Weather</h1>
+    <h3>Husk solkrem</h3>
     <area-search></area-search>
     <featured-cards></featured-cards>
   </div>
@@ -24,11 +24,12 @@ export default {
 
 .main-container{
     margin: auto;
-    width: 70%;
+    width: 80%;
     display: flex;
     flex-direction: column;
     color: $color-text;
-    h1{
+    h3{
+        margin-top: 1em;
         text-align: center;
     }
 }
