@@ -44,3 +44,18 @@ export function fetchWaterTemp(lat, lng){
             return "Noe skjedde med det janky apiet til met"
         })
 }
+
+export function fetchAreaName(name){
+    return fetch(`https://ws.geonorge.no/SKWS3Index/ssr/sok?navn=${name}*`)
+        .then(response => response.text())
+        .then(xml => parseXML(xml))
+        .then(parsedToJson => {
+            console.log(parsedToJson)
+            if(parsedToJson.sokRes.totaltAntallTreff[0] > 0){
+                return parsedToJson.sokRes.stedsnavn[0]
+            }
+            return "Klarte ikke finne stedet"
+        })
+        .catch(err => console.error(err))
+}
+
