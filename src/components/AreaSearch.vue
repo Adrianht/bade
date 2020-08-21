@@ -81,7 +81,6 @@ export default {
         }
     },
     renderMap(){
-        require('dotenv').config()
         let mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 
         mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
